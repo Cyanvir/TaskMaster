@@ -1,0 +1,3 @@
+C:/Users/Cyanv/Desktop/TaskMaster/build/CMakeFiles/TaskApp.dir
+C:/Users/Cyanv/Desktop/TaskMaster/build/CMakeFiles/edit_cache.dir
+C:/Users/Cyanv/Desktop/TaskMaster/build/CMakeFiles/rebuild_cache.dir
