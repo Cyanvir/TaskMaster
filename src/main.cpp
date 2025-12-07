@@ -1,19 +1,19 @@
-// src/main.cpp
 #include <iostream>
-#include "Task.h" // 引入需要使用的类
+#include "TaskManager.h" // 现在只需要引入管家
 
 int main() {
-    // 1. 创建一个任务对象
-    Task myTask("Finish Linear Algebra Exam");
+    // 实例化一个管家对象
+    TaskManager manager;
+    
+    std::cout << "=== TaskMaster v1.0 ===" << std::endl;
 
-    // 2. 打印它的初始状态
-    std::cout << "Task: " << myTask.getTitle() << std::endl;
-    std::cout << "Status: " << (myTask.isDone() ? "Done" : "Pending") << std::endl;
+    // 假装用户在输入命令
+    manager.addTask("Review Linear Algebra"); // 复习线代
+    manager.addTask("Write C++ Project");     // 写C++
+    manager.addTask("Sleep");                 // 睡觉
 
-    // 3. 完成它！
-    myTask.markCompleted();
-    std::cout << "--- Updated Status ---" << std::endl;
-    std::cout << "Status: " << (myTask.isDone() ? "Done" : "Pending") << std::endl;
+    // 显示列表
+    manager.showAllTasks();
 
     return 0;
 }
