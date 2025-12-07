@@ -1,19 +1,63 @@
+// src/main.cpp
 #include <iostream>
-#include "TaskManager.h" // 现在只需要引入管家
+#include <string>
+#include <limits> // 用于清理输入缓存
+#include "TaskManager.h"
+
+// 显示菜单的辅助函数
+void showMenu() {
+    std::cout << "\n==========================" << std::endl;
+    std::cout << "   TaskMaster 2026 CLI" << std::endl;
+    std::cout << "==========================" << std::endl;
+    std::cout << "1. Add New Task " << std::endl;
+    std::cout << "2. Show All Tasks " << std::endl;
+    std::cout << "0. Exit " << std::endl;
+    std::cout << "Please select: ";
+}
 
 int main() {
-    // 实例化一个管家对象
     TaskManager manager;
-    
-    std::cout << "=== TaskMaster v1.0 ===" << std::endl;
+    int choice;
+    std::string tempTitle;
 
-    // 假装用户在输入命令
-    manager.addTask("Review Linear Algebra"); // 复习线代
-    manager.addTask("Write C++ Project");     // 写C++
-    manager.addTask("Sleep");                 // 睡觉
+    // 【核心逻辑】无限循环
+    // 只要用户不输入 0，程序就永远不结束
+    while (true) {
+        showMenu();
+        
+        // 获取用户输入的数字
+        if (!(std::cin >> choice)) {
+            // 防止用户输入字母导致死循环的保护措施
+            std::cout << "Invalid input! Please enter a number." << std::endl;
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            continue;
+        }
 
-    // 显示列表
-    manager.showAllTasks();
+        // 【坑点修复】清除输入缓冲区里的 "回车键"
+        // 如果不写这行，后面的 getline 会直接读到一个空行
+        std::cin.ignore(); 
+
+        if (choice == 0) {
+            std::cout << "Goodbye! Good luck with your exams!" << std::endl;
+            break; // 打破循环，退出程序
+        }
+        else if (choice == 1) {
+            std::cout << "Enter task title: ";
+            // 使用 getline 允许输入的任务名带空格 (比如 "Go to sleep")
+            std::getline(std::cin, tempTitle);
+            
+            if (!tempTitle.empty()) {
+                manager.addTask(tempTitle);
+            }
+        }
+        else if (choice == 2) {
+            manager.showAllTasks();
+        }
+        else {
+            std::cout << "Unknown option, please try again." << std::endl;
+        }
+    }
 
     return 0;
 }
