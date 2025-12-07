@@ -16,6 +16,7 @@ public:
 
     // 显示所有任务
     void showAllTasks() const;
+    bool markTaskCompleted(int index);
 };
 
 #endif

@@ -25,4 +25,19 @@ void TaskManager::showAllTasks() const {
                   << tasks[i].getTitle() << std::endl;
     }
     std::cout << "------------------\n" << std::endl;
+    
+}
+bool TaskManager::markTaskCompleted(int index) {
+    // 1. 检查序号是不是瞎写的 (比如只有3个任务，用户输了 100)
+    // 这里的 index 是用户输入的数字 (从1开始)
+    if (index <= 0 || index > tasks.size()) {
+        std::cout << "Error: Invalid task number!" << std::endl;
+        return false;
+    }
+
+    // 2. 转换成数组下标 (从0开始)，并标记
+    tasks[index - 1].markCompleted();
+    
+    std::cout << "Task " << index << " marked as completed!" << std::endl;
+    return true;
 }

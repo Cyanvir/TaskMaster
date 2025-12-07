@@ -11,6 +11,7 @@ void showMenu() {
     std::cout << "==========================" << std::endl;
     std::cout << "1. Add New Task " << std::endl;
     std::cout << "2. Show All Tasks " << std::endl;
+    std::cout << "3. Mark Task as Done" << std::endl;
     std::cout << "0. Exit " << std::endl;
     std::cout << "Please select: ";
 }
@@ -54,6 +55,19 @@ int main() {
         else if (choice == 2) {
             manager.showAllTasks();
         }
+        else if (choice == 3) {
+            int taskID;
+            std::cout << "Enter task ID to complete: ";
+            // 检查输入是不是数字
+            if (std::cin >> taskID) {
+                manager.markTaskCompleted(taskID);
+            } else {
+                std::cout << "Invalid input! Please enter a number." << std::endl;
+                // 清理一下输入缓存，防止死循环
+                std::cin.clear();
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            }
+}
         else {
             std::cout << "Unknown option, please try again." << std::endl;
         }
