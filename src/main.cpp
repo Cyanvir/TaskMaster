@@ -70,29 +70,38 @@ int main() {
             }
         }
         else if (choice == 4) {
-            int taskID;
-            std::cout << "Enter task ID to edit: ";
-
-            if (std::cin >> taskID) {
-                // 清理缓冲区里的回车符！
-                // 如果不加这行，下面的 getline 会直接读到空字符串
-                std::cin.ignore(); 
-
-                std::cout << "Enter new title: ";
-                std::string newTitle;
-                std::getline(std::cin, newTitle);
-
-                if (!newTitle.empty()) {
-                    manager.editTaskTitle(taskID, newTitle);
-                } else {
-                    std::cout << "Error: Title cannot be empty!" << std::endl;
-                }
-            } else {
-                std::cout << "Invalid input! Please enter a number." << std::endl;
-                std::cin.clear();
-                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        int taskID;
+        std::cout << "Enter task ID to edit: ";
+        
+        if (std::cin >> taskID) {
+            // 先检查 ID 是否合法！
+            // 必须大于0，且不能超过任务总数
+            if (taskID <= 0 || taskID > manager.getTaskCount()) {
+                std::cout << "Error: ID " << taskID << " does not exist!" << std::endl;
+                // 清理输入流，防止后续逻辑混乱
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); 
+                continue; // 直接跳过本次循环，不让他输标题
             }
+
+            // ID 验证通过了，才继续往下走
+            std::cin.ignore(); // 清理回车符
+
+            std::cout << "Enter new title: ";
+            std::string newTitle;
+            std::getline(std::cin, newTitle);
+
+            if (!newTitle.empty()) {
+                manager.editTaskTitle(taskID, newTitle);
+            } else {
+                std::cout << "Error: Title cannot be empty!" << std::endl;
+            }
+        } else {
+            // 这里处理的是“输入的不是数字”的情况 (比如输入了 "abc")
+            std::cout << "Invalid input! Please enter a number." << std::endl;
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         }
+    }
         else {
             std::cout << "Unknown option, please try again." << std::endl;
         }

@@ -56,3 +56,7 @@ bool TaskManager::editTaskTitle(int index, const std::string& newTitle) {
     std::cout << "Task " << index << " updated successfully!" << std::endl;
     return true;
 }
+
+int TaskManager::getTaskCount() const {
+    return tasks.size();
+}

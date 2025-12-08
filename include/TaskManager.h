@@ -19,6 +19,7 @@ public:
     bool markTaskCompleted(int index);
     // 修改指定任务的标题
     bool editTaskTitle(int index, const std::string& newTitle);
+    int getTaskCount() const;
 };
 
 #endif
