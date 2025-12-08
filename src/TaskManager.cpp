@@ -41,3 +41,18 @@ bool TaskManager::markTaskCompleted(int index) {
     std::cout << "Task " << index << " marked as completed!" << std::endl;
     return true;
 }
+bool TaskManager::editTaskTitle(int index, const std::string& newTitle) {
+    // 1. 安全检查：序号是否存在？
+    if (index <= 0 || index > tasks.size()) {
+        std::cout << "Error: Invalid task number!" << std::endl;
+        return false;
+    }
+
+    // 2. 这里的核心逻辑：
+    // vector 下标是 index - 1
+    // 调用我们刚才写的 setTitle 函数
+    tasks[index - 1].setTitle(newTitle);
+
+    std::cout << "Task " << index << " updated successfully!" << std::endl;
+    return true;
+}

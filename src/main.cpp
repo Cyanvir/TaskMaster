@@ -12,6 +12,7 @@ void showMenu() {
     std::cout << "1. Add New Task " << std::endl;
     std::cout << "2. Show All Tasks " << std::endl;
     std::cout << "3. Mark Task as Done" << std::endl;
+    std::cout << "4. Edit Task Title" << std::endl;
     std::cout << "0. Exit " << std::endl;
     std::cout << "Please select: ";
 }
@@ -67,7 +68,31 @@ int main() {
                 std::cin.clear();
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             }
-}
+        }
+        else if (choice == 4) {
+            int taskID;
+            std::cout << "Enter task ID to edit: ";
+
+            if (std::cin >> taskID) {
+                // 清理缓冲区里的回车符！
+                // 如果不加这行，下面的 getline 会直接读到空字符串
+                std::cin.ignore(); 
+
+                std::cout << "Enter new title: ";
+                std::string newTitle;
+                std::getline(std::cin, newTitle);
+
+                if (!newTitle.empty()) {
+                    manager.editTaskTitle(taskID, newTitle);
+                } else {
+                    std::cout << "Error: Title cannot be empty!" << std::endl;
+                }
+            } else {
+                std::cout << "Invalid input! Please enter a number." << std::endl;
+                std::cin.clear();
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            }
+        }
         else {
             std::cout << "Unknown option, please try again." << std::endl;
         }

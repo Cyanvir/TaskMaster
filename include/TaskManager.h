@@ -17,6 +17,8 @@ public:
     // 显示所有任务
     void showAllTasks() const;
     bool markTaskCompleted(int index);
+    // 修改指定任务的标题
+    bool editTaskTitle(int index, const std::string& newTitle);
 };
 
 #endif

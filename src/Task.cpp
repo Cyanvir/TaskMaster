@@ -20,4 +20,11 @@ bool Task::isDone() const {
 // 获取任务标题
 std::string Task::getTitle() const {
     return this->title;
+
+    
+}
+
+// 实现的具体逻辑
+void Task::setTitle(const std::string& newTitle) {
+    this->title = newTitle;
 }

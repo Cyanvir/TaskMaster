@@ -20,6 +20,8 @@ public:
     void markCompleted();
     bool isDone() const;
     std::string getTitle() const;
+    // 允许修改标题
+    void setTitle(const std::string& newTitle);
 };
 
 #endif // TASK_H
