@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>测测你是什么品种的猪</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#FFB6C1', // 浅粉色
+            secondary: '#FFF0F5', // 薰衣草红
+            accent: '#FF69B4', // 亮粉色
+            dark: '#8B4513', // 深棕色字体
+          },
+          animation: {
+            'bounce-slow': 'bounce 2s infinite',
+            'wiggle': 'wiggle 1s ease-in-out infinite',
+            'pop': 'pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards',
+            'spin-slow': 'spin 3s linear infinite',
+          },
+          keyframes: {
+            wiggle: {
+              '0%, 100%': { transform: 'rotate(-3deg)' },
+              '50%': { transform: 'rotate(3deg)' },
+            },
+            pop: {
+              '0%': { transform: 'scale(0.5)', opacity: 0 },
+              '100%': { transform: 'scale(1)', opacity: 1 },
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .text-shadow { text-shadow: 2px 2px 0px rgba(255,182,193,0.5); }
+      .glass-effect {
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(10px);
+      }
+    }
+    body {
+      touch-action: manipulation;
+    }
+  </style>
+</head>
+<body class="bg-secondary min-h-screen flex flex-col items-center justify-center p-4 font-sans text-dark">
+
+  <div class="container max-w-md mx-auto relative">
+    
+    <div class="absolute top-0 left-0 w-32 h-32 bg-primary/30 rounded-full blur-3xl -z-10 animate-pulse"></div>
+    <div class="absolute bottom-0 right-0 w-40 h-40 bg-accent/20 rounded-full blur-3xl -z-10 animate-pulse delay-700"></div>
+
+    <div class="text-center mb-8">
+      <h1 class="text-4xl md:text-5xl font-black mb-2 text-accent tracking-wider text-shadow">
+        猪猪鉴定所
+      </h1>
+      <p class="text-gray-500 text-sm bg-white/50 inline-block px-4 py-1 rounded-full">
+        基于姓名 ASCII 码的科学(?)算命
+      </p>
+    </div>
+
+    <div class="glass-effect rounded-3xl shadow-xl p-8 border-4 border-white transform transition-all duration-300">
+      
+      <div id="input-area" class="flex flex-col gap-6">
+        <div class="text-center">
+          <div class="text-6xl mb-4 animate-wiggle">🐷</div>
+          <p class="text-lg font-bold text-gray-700 mb-2">输入名字，揭示真身</p>
+          <p class="text-xs text-gray-400">（试试输入神秘数字代码有惊喜）</p>
+        </div>
+
+        <div class="relative">
+          <input type="text" id="name-input" 
+            class="w-full px-6 py-4 text-center text-xl font-bold text-gray-700 bg-gray-50 border-2 border-primary/30 rounded-2xl focus:outline-none focus:border-accent focus:ring-4 focus:ring-primary/20 transition-all placeholder-gray-300"
+            placeholder="请输入你的名字..."
+            onkeydown="if(event.key === 'Enter') startTest()"
+          >
+        </div>
+
+        <button onclick="startTest()" 
+          class="w-full bg-gradient-to-r from-primary to-accent text-white font-black text-xl py-4 rounded-2xl shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-95 transition-all transform flex items-center justify-center gap-2">
+          <span>开始鉴定</span>
+          <span class="text-2xl">🔍</span>
+        </button>
+      </div>
+
+      <div id="loading-area" class="hidden py-10 flex-col items-center justify-center">
+        <div class="relative w-24 h-24 mb-4">
+          <div class="absolute inset-0 border-8 border-primary/20 rounded-full"></div>
+          <div class="absolute inset-0 border-8 border-accent rounded-full border-t-transparent animate-spin"></div>
+          <div class="absolute inset-0 flex items-center justify-center text-4xl animate-bounce">🐽</div>
+        </div>
+        <p class="text-accent font-bold animate-pulse">正在提取猪猪因子...</p>
+      </div>
+
+      <div id="result-area" class="hidden animate-pop">
+        <div class="flex flex-col items-center text-center">
+          
+          <div class="relative mb-6 group cursor-pointer" onclick="shakeEmoji()">
+            <div class="absolute inset-0 bg-yellow-200 rounded-full blur-xl opacity-50 group-hover:opacity-80 transition-opacity"></div>
+            <div id="result-emoji" class="text-8xl relative z-10 filter drop-shadow-xl transform transition-transform group-hover:scale-110 duration-300">
+              🐷
+            </div>
+            <div class="absolute -bottom-2 -right-2 bg-white px-2 py-1 rounded-lg text-xs font-bold shadow-sm border border-gray-100 rotate-12">
+              SSR级
+            </div>
+          </div>
+
+          <h2 id="result-name" class="text-3xl font-black text-gray-800 mb-2"></h2>
+          <p id="result-desc" class="text-accent font-bold mb-4 text-lg"></p>
+          
+          <div class="bg-gray-50 rounded-xl p-4 w-full border border-gray-100 mb-6">
+            <h3 class="text-xs text-gray-400 uppercase tracking-widest font-bold mb-2 text-left">鉴定报告</h3>
+            <p id="result-analysis" class="text-gray-600 text-justify leading-relaxed text-sm"></p>
+          </div>
+
+          <div class="w-full space-y-2 mb-6 text-xs font-bold text-gray-500">
+            <div class="flex items-center gap-2">
+              <span class="w-12">食量</span>
+              <div class="flex-1 bg-gray-200 rounded-full h-2 overflow-hidden">
+                <div id="bar-eat" class="bg-primary h-full rounded-full" style="width: 0%"></div>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="w-12">懒度</span>
+              <div class="flex-1 bg-gray-200 rounded-full h-2 overflow-hidden">
+                <div id="bar-lazy" class="bg-accent h-full rounded-full" style="width: 0%"></div>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="w-12">可爱</span>
+              <div class="flex-1 bg-gray-200 rounded-full h-2 overflow-hidden">
+                <div id="bar-cute" class="bg-yellow-400 h-full rounded-full" style="width: 0%"></div>
+              </div>
+            </div>
+          </div>
+
+          <button onclick="resetTest()" class="text-gray-400 hover:text-accent font-medium underline decoration-dashed underline-offset-4 transition-colors">
+            换个名字再测一次
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <footer class="mt-8 text-center text-gray-400 text-sm">
+      <p>© 2025 猪猪基因库 | 结果仅供娱乐</p>
+    </footer>
+  </div>
+
+  <script>
+    // 基础结果库 (普通输入)
+    const pigResults = [
+      { name: "纯种人类", emoji: "🧘", desc: "竟然不是猪？", analysis: "虽然你身处猪圈（地球），但你保持了人类的清醒。不过数据显示，你最近可能有点想吃炸鸡。" },
+      { name: "粉红小猪", emoji: "🐖", desc: "最为经典", analysis: "你是最标准的可爱小猪，性格温顺，吃饱了就睡。你的快乐很简单，一顿火锅就能解决99%的烦恼。" },
+      { name: "野猪大佐", emoji: "🐗", desc: "冲撞力 MAX", analysis: "既然也是猪，那就不要做咸鱼！你拥有野猪般的冲劲，认准了目标就会直接撞过去，头铁是你的优点也是缺点。" },
+      { name: "精致猪猪", emoji: "🎀", desc: "猪界名媛", analysis: "即使是做猪，也要做最精致的那一只。你注重生活品质，出门倒垃圾都要整理发型。" },
+      { name: "学术猪", emoji: "🎓", desc: "知识改变猪命", analysis: "你是一只戴眼镜的猪，相信知识就是力量。别人在抢猪饲料的时候，你在思考猪生的意义。" },
+      { name: "赛博朋克猪", emoji: "🤖", desc: "机械飞升", analysis: "你虽然是猪，但你的灵魂属于二进制。你对电子产品有种天生的亲近感，网速就是你的生命线。" },
+      { name: "存钱猪", emoji: "💰", desc: "只进不出", analysis: "你对金钱有着敏锐的嗅觉，就像存钱罐一样，肚子里的'货'全是积蓄。是朋友圈里的隐形富豪。" },
+      { name: "黑洞猪", emoji: "🌌", desc: "吞噬万物", analysis: "你的胃连接着异次元。无论吃多少东西，都能在半小时后感到饥饿。Buff：永远吃不饱。" },
+      { name: "锦鲤猪", emoji: "🎏", desc: "好运爆棚", analysis: "你不需要努力，只需要躺平。好运会自动找上门来，是大家争相转发的对象。" },
+      { name: "emo猪", emoji: "🌧️", desc: "网抑云深度用户", analysis: "深夜是你最活跃的时候。你多愁善感，看着月亮都会流泪，内心戏足到可以拍80集连续剧。" }
+    ];
+
+    // 神秘代码菜单 (Easter Eggs)
+    const specialCodes = {
+      "666": { name: "地狱魔猪", emoji: "😈", desc: "来自深渊的主宰", analysis: "既然你输入了666，那就没办法了。你是一只掌控黑暗力量的魔猪，只有最辣的火锅才能抚慰你的灵魂。" },
+      "520": { name: "恋爱脑猪", emoji: "🥰", desc: "满脑子都是TA", analysis: "检测到极高浓度的粉红泡泡。你为了爱可以放弃猪饲料，是猪界的情圣。" },
+      "888": { name: "暴发户猪", emoji: "🤑", desc: "富可敌国", analysis: "财神爷附体！输入这个数字的你，注定要发大财。苟富贵，勿相忘啊！" },
+      "1024": { name: "程序猿猪", emoji: "💻", desc: "Hello World", analysis: "发际线是你智慧的象征。你是一只逻辑严密的猪，喜欢用代码构建猪圈。" },
+      "114514": { name: "恶臭野兽", emoji: "💩", desc: "很有精神！", analysis: "这个数字...哼，哼，啊啊啊啊啊！你是一只充满'味道'的传说级生物。" },
+      "admin": { name: "GM猪", emoji: "👑", desc: "系统管理员", analysis: "你是这个世界的管理者。所有的小猪都要听你号令。无敌是多么寂寞。" },
+      "滋滋哈": { name: "创世神猪", emoji: "🌟", desc: "作者本尊", analysis: "检测到作者签名。你是创造这个世界的神，光芒万丈，不可直视！" },
+      "cyanvir": { name: "创世神猪", emoji: "🌟", desc: "作者本尊", analysis: "检测到作者签名。你是创造这个世界的神，光芒万丈，不可直视！" },
+      "bug": { name: "故障猪", emoji: "👾", desc: "Error 404", analysis: "你的存在是一个美丽的错误。你在规则之外游走，没有人能定义你。" }
+    };
+
+    // DOM 元素
+    const inputArea = document.getElementById('input-area');
+    const loadingArea = document.getElementById('loading-area');
+    const resultArea = document.getElementById('result-area');
+    const nameInput = document.getElementById('name-input');
+
+    // 开始测试
+    function startTest() {
+      const name = nameInput.value.trim();
+      
+      if (!name) {
+        alert("请先输入名字或神秘代码！");
+        nameInput.focus();
+        // 简单的震动反馈
+        nameInput.classList.add('animate-wiggle');
+        setTimeout(() => nameInput.classList.remove('animate-wiggle'), 500);
+        return;
+      }
+
+      // UI 切换：输入 -> 加载
+      inputArea.classList.add('hidden');
+      loadingArea.classList.remove('hidden');
+      loadingArea.classList.add('flex');
+
+      // 模拟计算延迟 (1.5秒)
+      setTimeout(() => {
+        calculateResult(name);
+      }, 1500);
+    }
+
+    // 计算逻辑
+    function calculateResult(input) {
+      loadingArea.classList.add('hidden');
+      loadingArea.classList.remove('flex');
+      resultArea.classList.remove('hidden');
+
+      let result;
+
+      // 1. 检查是否触发神秘代码 (彩蛋)
+      if (specialCodes[input]) {
+        result = specialCodes[input];
+      } 
+      // 2. 常规逻辑：ASCII 码求和取模
+      else {
+        let sum = 0;
+        for (let i = 0; i < input.length; i++) {
+          sum += input.charCodeAt(i);
+        }
+        // 使用取模运算确保结果稳定
+        const index = sum % pigResults.length;
+        result = pigResults[index];
+        
+        // 基于ASCII码生成随机属性值 (伪随机，保证同名同结果)
+        setRandomStats(sum);
+      }
+      
+      // 3. 渲染结果
+      document.getElementById('result-emoji').textContent = result.emoji;
+      document.getElementById('result-name').textContent = result.name;
+      document.getElementById('result-desc').textContent = result.desc;
+      document.getElementById('result-analysis').textContent = result.analysis;
+      
+      // 如果是彩蛋，属性直接拉满
+      if (specialCodes[input]) {
+        updateBars(100, 100, 100);
+      }
+    }
+
+    // 设置属性条 (伪随机)
+    function setRandomStats(seed) {
+      // 简单的线性同余生成器模拟
+      const val1 = (seed * 9301 + 49297) % 233280;
+      const val2 = (seed * 1234 + 56789) % 233280;
+      const val3 = (seed * 5555 + 11111) % 233280;
+
+      const eat = 30 + (val1 % 70); // 30-100
+      const lazy = 20 + (val2 % 80); // 20-100
+      const cute = 40 + (val3 % 60); // 40-100
+
+      updateBars(eat, lazy, cute);
+    }
+
+    function updateBars(eat, lazy, cute) {
+      setTimeout(() => {
+        document.getElementById('bar-eat').style.width = eat + '%';
+        document.getElementById('bar-lazy').style.width = lazy + '%';
+        document.getElementById('bar-cute').style.width = cute + '%';
+      }, 100);
+    }
+
+    // 重置测试
+    function resetTest() {
+      resultArea.classList.add('hidden');
+      inputArea.classList.remove('hidden');
+      nameInput.value = '';
+      nameInput.focus();
+      
+      // 重置进度条
+      document.getElementById('bar-eat').style.width = '0%';
+      document.getElementById('bar-lazy').style.width = '0%';
+      document.getElementById('bar-cute').style.width = '0%';
+    }
+
+    // Emoji 点击动画
+    function shakeEmoji() {
+      const emoji = document.getElementById('result-emoji');
+      emoji.classList.remove('animate-bounce');
+      void emoji.offsetWidth; // 触发重绘
+      emoji.classList.add('animate-bounce');
+    }
+  </script>
+</body>
+</html>
