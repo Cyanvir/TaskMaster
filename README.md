@@ -35,7 +35,7 @@ TaskMaster/
 ## 4. 构建与运行方式 (Build & Run)
 本项目依赖 CMake 和 C++ 编译器 (如 MinGW/GCC)。请按照以下步骤运行：
 
-# 4.1 构建项目
+### 4.1 构建项目
 ```text
 # 1. 创建构建目录 (Out-of-source build)
 mkdir build
@@ -51,7 +51,7 @@ cmake -G "MinGW Makefiles" ..
 cmake --build .
 ```
 
-# 4.2 运行程序
+### 4.2 运行程序
 编译成功后，在 build 目录下运行：
 ```text
 # Windows
