@@ -1,19 +1,27 @@
-# 1. 规定 CMake 的最低版本 (标准写法)
 cmake_minimum_required(VERSION 3.10)
-
-# 2. 定义项目名称
 project(TaskMaster)
 
-# 3. 设置 C++ 标准为 C++11 或 C++14 (保证兼容性)
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 
-# 4. 告诉编译器头文件在哪里 (重要！不然以后找不到 .h 文件)
+# 告诉 CMake 头文件在哪里
 include_directories(include)
 
-# 5. 自动查找 src 目录下所有的 .cpp 文件，存到 SOURCES 变量里
-#    这样就不用每加一个文件都改一次 CMakeLists 了
-file(GLOB SOURCES "src/*.cpp")
+# ==========================================
+# 1. 主程序 (TaskApp)
+# ==========================================
+# 只包含 main.cpp (真正的入口)
+add_executable(TaskApp 
+    src/main.cpp 
+    src/Task.cpp 
+    src/TaskManager.cpp
+)
 
-# 6. 生成可执行文件
-#    名字叫 TaskApp，由 SOURCES 里的文件编译而来
-add_executable(TaskApp ${SOURCES})
+# ==========================================
+# 2. 测试程序 (TaskTests) 
+# ==========================================
+# 这里的入口是 src/test_main.cpp
+add_executable(TaskTests 
+    src/test_main.cpp 
+    src/Task.cpp 
+    src/TaskManager.cpp
+)
